@@ -11,7 +11,10 @@ function work(sec) {
 
 work(1).then((result) => {
     console.log("첫 번째 작업", result);
-    return work(1);
+    return work(1); // then이 끝나면 무엇가를 반환해주어야 다음코드가 실행된다.
 }).then((result) => {
     console.log("두 번째 작업", result)
+    return work(2);
+}).then((result) => {
+    console.log("세 번재 작업", result)
 });
