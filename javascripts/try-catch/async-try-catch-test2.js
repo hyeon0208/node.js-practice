@@ -10,3 +10,4 @@ function promiseFunc() {
 
 const result = AsyncFunc().catch(e => {console.log(e)});
 const result2 = promiseFunc().catch(e => {console.log(e)});
+
