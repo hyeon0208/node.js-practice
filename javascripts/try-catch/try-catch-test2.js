@@ -1,6 +1,6 @@
 function f2() {
     console.log("f2 함수 시작");
-    throw new Error("오류 발생");
+    throw "오류 발생";
     console.log("f2 함수 끝");
 }
 
