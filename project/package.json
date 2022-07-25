@@ -1,0 +1,12 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "node.js를 활용한 project",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run dev",
+    "start": "node index.js"
+  },
+  "author": "Hyeon jun suh",
+  "license": "ISC"
+}
