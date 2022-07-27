@@ -1,6 +1,6 @@
 const http = require('http');
 
-http.createrServer((req, res) => {
+http.createServer((req, res) => {
     res.writeHead(200, { "content-Type": "test/html; charset=utf-8" });
     res.write( "<h1>Node.js로 서버 만들기</h1>");
     res.end("<p>http모듈 공부 중...</p>")
