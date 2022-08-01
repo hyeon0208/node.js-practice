@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 /* 라우팅 설정 */
 app.get('/airkorea', async (req, res) => {
-    const serviceKey = "5mAMc3kiYw5F31M6iqUV";
+    const serviceKey = "aIDOJBXfX4Zf4OOcsO3XzqFsNXkTfuAGsIsKeCjn4wt7aYP%2BxpJaGlL8209Fu6Nndt6o3rB8NMoWXH%2BYh1O%2BqQ%3D%3D";
     const airUrl = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?";
 
     let parmas = encodeURI('serviceKey') + '=' + serviceKey;
@@ -28,7 +28,7 @@ app.get('/airkorea', async (req, res) => {
 
     try {
         const result = await axios.get(url);
-        res.json(result.data); // .data
+        res.json(result.data); // 결과 뒤에 .data 를 붙여야함.
     } catch (error) {
         console.log(error);
     }
