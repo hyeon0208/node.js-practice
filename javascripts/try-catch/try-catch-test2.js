@@ -1,6 +1,6 @@
 function f2() {
     console.log("f2 함수 시작");
-    throw "오류 발생";
+    throw new Error("오류 발생");
     console.log("f2 함수 끝");
 }
 
@@ -14,5 +14,4 @@ function f1() {
     console.log("f1 함수 끝")
 }
 
-f1();
-
+f1()
