@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 /* 라우팅 설정 */
 app.get('/airkorea/detail', async (req, res) => {
-    const serviceKey = "aIDOJBXfX4Zf4OOcsO3XzqFsNXkTfuAGsIsKeCjn4wt7aYP%2BxpJaGlL8209Fu6Nndt6o3rB8NMoWXH%2BYh1O%2BqQ%3D%3D";
+    const serviceKey = "";
     const airUrl = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?";
 
     let parmas = encodeURI('serviceKey') + '=' + serviceKey;
@@ -29,8 +29,8 @@ app.get('/airkorea/detail', async (req, res) => {
     try {
         const result = await axios.get(url);
         const airItem = {
-            //"location": result.data.ArpltnInforInqireSvcVo['stationName'], // 지역
-            location: '마포구',
+            //"location": result.data.ArpltnInforInqireSvcVo['stationName'], // stationName 을 응답 메시지로 보내주지 않습니다. (최근 변경)
+            location: '마포구', //locaition을 직접 명시
             time: result.data.response.body.items[0]['dataTime'], // 시간대
             pm10: result.data.response.body.items[0]['pm10Value'], // pm10 수치
             pm25: result.data.response.body.items[0]['pm25Value'], // pm25 수치
