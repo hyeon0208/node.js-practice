@@ -40,7 +40,7 @@ app.get('/airkorea', async (req, res) => {
         // pm10은 미세먼지 수치
         if (airItem.pm10 <= 30) {
             badAir.push("좋음😀");
-        } else if (airItem.pm10 > 30 && airItem.pm10 <= 80) {
+        } else if (pm10 > 30 && pm10 <= 80) {
             badAir.push("보통😐");
         } else {
             badAir.push("나쁨😡");
@@ -49,14 +49,19 @@ app.get('/airkorea', async (req, res) => {
         //pm25는 초미세먼지 수치
         if (airItem.pm25 <= 15) {
             badAir.push("좋음😀");
-        } else if (airItem.pm25 > 15 && airItem.pm10 <= 35) {
+        } else if (pm25 > 15 && pm10 <= 35) {
             badAir.push("보통😐");
         } else {
             badAir.push("나쁨😡");
         }
 
-        res.send(`관측 지역: ${airItem.location} / 관측 시간: ${airItem.time} <br>
-        미세먼지 ${badAir[0]} 초미세먼지 ${badAir[1]} 입니다.`);
+        const airItems = [airItem.location, airItem.time, badAir[0], badAir[1]];
+        airItems.forEach((val) => {
+            client.rpush('airItems', val); // redis에 저장
+        });
+        client.expire('airItems', 60 * 60);
+
+        res.send(`캐시된 데이터가 없습니다.`);
     } catch (error) {
         console.log(error);
     }
@@ -64,5 +69,5 @@ app.get('/airkorea', async (req, res) => {
 
 /* 서버와 포트 연결.. */
 app.listen(app.get('port'), () => {
-    console.log(app.get('port'), '번 포트에서 서버 실행 중 ..')
+console.log(app.get('port'), '번 포트에서 서버 실행 중 ..')
 });
