@@ -5,6 +5,7 @@ const uuidAPIkey = require('uuid-apikey');
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 //포트 설정
 app.set('port', process.env.PORT || 8080);
@@ -13,6 +14,7 @@ app.set('port', process.env.PORT || 8080);
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // 테스트를 위한 api키
 const key = {
