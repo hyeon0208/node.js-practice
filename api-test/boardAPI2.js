@@ -90,7 +90,7 @@ app.get('/board/:apikey/:type', (req, res) => {
         // .check(apikey, key.uuid)는 eky와 uuid가 짝이 맞는지 확인. (둘중 하나라도 false면 "wrong API Key 응답")
         if (type === 'search') { // type search 일 시 키워드로 게시글 검색  
             const keyword = queryData.keyword;
-            const result = boardList.filter((e) => {
+            const result = boardList.filter((e) => { //boardList에 title 값이 포함되어 있는지 includes로 확인.
                 return e.title.includes(keyword)
             })
             res.send(result);
