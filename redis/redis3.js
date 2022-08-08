@@ -1,6 +1,7 @@
 const path = require('path');
 const dotenv = require('dotenv');
-dotenv.config({ path: path.resolve(__dirname, "./.env") }); const morgan = require('morgan');
+dotenv.config({ path: path.resolve(__dirname, "./.env") }); 
+const morgan = require('morgan');
 const axios = require('axios');
 const express = require('express');
 const app = express();
