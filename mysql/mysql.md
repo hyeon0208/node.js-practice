@@ -66,3 +66,10 @@ DELETE FROM [table명] WHERE [조건식];
 
 - Foreign Key 추가
 ALTER TABLE [table명] ADD FOREIGN KEY ([FK로 설정할 column명]) REFERENCES [참조할 table명(참조할 PK명)];
+
+## Operators
+
+- LIKE
+SELECT [column명] FROM [table명] WHERE [table명.column명] LIKE [pattern];
+> LIKE 연산자를 사용하면, 특정 column에 문자열을 검색할 수 있다.
+SQL에서는 LIKE 연산자에 %와 _라는 와일드 카드를 사용하여 임의의 패턴에 일치하는 문자열을 찾을 수 있다.
