@@ -63,6 +63,8 @@
 
     function updateUsers(list) {
       for (let i = 0; i < list.length; i++) {
+        // #은 id를 뜻하는 문자로, #user는 id가 user인 요소를 가르킨다.
+        // $("#users")는 JQuery라는 라이브러리의 참조를 사용한 것으로 id가 users인 요소를 참조하라는 뜻이다.
         $("#users").append("<li><b>" + list[i] + "</b></li>");
       }
     }
