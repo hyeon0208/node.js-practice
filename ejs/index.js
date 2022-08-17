@@ -11,16 +11,19 @@ app.get('/', (req, res) => {
         "People":
             [
                 {
-                    "name": "Gildong",
-                    "age": "15"
+                    "name": "이동해",
+                    "age": "32"
                 },
                 {
-                    "name": "Jinsu",
-                    "age": "27"
+                    "name": "김지수",
+                    "age": "23"
                 },
                 {
-                    "name": "Hyena",
-                    "age": "25"
+                    "name": "박현아",
+                    "age": "29"
+                },
+                 "name": "박현아",
+                    "age": "29"
                 }
             ]
         , title: "Express"
