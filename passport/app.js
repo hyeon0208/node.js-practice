@@ -10,10 +10,10 @@ const app = express();
 // 포트 설정
 app.set('port', process.env.PORT || 8080);
 
-// 가상 데이터
+// 가상 데이터 객체 생성
 let fakeUser = {
-    username: 'test@test.com',
-    password: 'test@1234'
+    username: 'shj',
+    password: '12341234'
 }
 
 // 미들웨어 
@@ -31,9 +31,12 @@ app.use(session({
     }
 }));
 
-// passport middleware 
-app.use(passport.initialize()); // passport 초기화
-app.use(passport.session()); // passport session 연동
+// passport 미들웨어 
+app.use(passport.initialize()); // passport 초기화 부분
+app.use(passport.session()); // passport session 연동 ( express session을 내부적으로 사용한단 의미)
+// req.session에 passport 관련 정보를 저장하게 된다.
+// passport는 세션을 내부적으로 사용하기 때문에 반드시 세션을 활성화하는 코드 다음에 위치해야한다.
+
 
 // 세션 처리 - 로그인에 성공했을 경우 딱 한번 호출되어 사용자의 식별자를 session에 저장
 passport.serializeUser(function (user, done) {
@@ -52,6 +55,7 @@ passport.use(new LocalStrategy(
         if (username === fakeUser.username) { // username OK
             if (password === fakeUser.password) { // password OK
                 return done(null, fakeUser);
+                // done(오류 여부, 결과 값, 실패했을 경우)
             } else {
                 return done(null, false, { message: "password incorrect" });
             }
@@ -88,13 +92,16 @@ app.get('/', (req, res) => {
 /* Passport Login : Strategy-Local */
 /* Authenticate Requests */
 app.post('/login',
+    // '/login' 엔드포인트에서 로그인에 실패했을 시 failureRedirect로 '/' 엔드포인트로 리다이렉션 
+    // passport.authenticate(local, ) 를 통해 local 전략을 사용할 것을 알림
     passport.authenticate('local', { failureRedirect: '/' }),
     function (req, res) {
         res.send('Login success..!')
     });
 
+    // 로그아웃
 app.get('/logout', function (req, res) {
-    req.logout();
+    req.logout(); // req.session에 담긴 사용자의 정보를 삭제한다.
     res.redirect('/');
 });
 
