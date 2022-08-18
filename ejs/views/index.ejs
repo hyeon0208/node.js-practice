@@ -7,6 +7,7 @@
     <title><%= title %></title>  
 </head>
 <body>
+    <!-- title 이라는 변수와 people이라는 객체를 index.html 로 넘겨준다. -->
     <h1><%= title %></h1>
     <% for (var i = 0; i < People.length; i++) { %>
         <p>Welcome to <%- People[i].name %></p>
