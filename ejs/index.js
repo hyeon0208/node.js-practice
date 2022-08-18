@@ -3,7 +3,11 @@ const express = require('express');
 const app = express();
 
 app.set('port', process.env.PORT || 3000);
+
+// ejs 파일 위치
 app.set('views', __dirname + '/views')
+
+// ejs 사용
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
@@ -19,12 +23,14 @@ app.get('/', (req, res) => {
                     "age": "23"
                 },
                 {
-                    "name": "박현아",
-                    "age": "29"
+                    "name": "이현아",
+                    "age": "25"
                 },
-                 "name": "박현아",
-                    "age": "29"
+                {
+                    "name": "서지석",
+                    "age": "23"
                 }
+
             ]
         , title: "Express"
     });
