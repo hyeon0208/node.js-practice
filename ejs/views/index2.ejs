@@ -1,0 +1,26 @@
+<!-- 
+    partials 에 있는 ejs 파일들을 하나로 합치는 ejs 파일 
+
+    <%- include('경로') %> 태그로 흩어져 있는 파일들을 하나의 파일로 맞출 수 있다.
+
+-->
+
+<!DOCTYPE html>  
+<html>  
+    <head>  
+        <%- include('./partials/head'); %>  
+    </head>  
+    
+    <header>  
+    <%- include('./partials/header'); %>  
+    </header>  
+    
+    <body>  
+        <h1><%= menu %></h1>  
+        <p><%= menu %>의 본문 부분 입니다.</p>     
+    </body>  
+    
+    <footer>  
+        <%- include('./partials/footer'); %>  
+    </footer>  
+</html>  
