@@ -92,18 +92,27 @@ app.get('/', (req, res) => {
 /* Passport Login : Strategy-Local */
 /* Authenticate Requests */
 app.post('/login',
-    // '/login' 엔드포인트에서 로그인에 실패했을 시 failureRedirect로 '/' 엔드포인트로 리다이렉션 
+    // '/login' 엔드포인트에서 로그인에 실패했을 시 failureRedirect로 '/' 엔드포인트로 리다이렉션
+     
     // passport.authenticate(local, ) 를 통해 local 전략을 사용할 것을 알림
     passport.authenticate('local', { failureRedirect: '/' }),
-    function (req, res) {
-        res.send('Login success..!')
+    function(req,res){
+        req.session.save(function(){
+          res.redirect('/');      
+        });
     });
-
     // 로그아웃
-app.get('/logout', function (req, res) {
-    req.logout(); // req.session에 담긴 사용자의 정보를 삭제한다.
-    res.redirect('/');
-});
+// app.get('/logout', function (req, res) {
+//     req.logout(); // req.session에 담긴 사용자의 정보를 삭제한다.
+//     res.redirect('/');
+// });
+
+app.get('/logout', function (req,res) {
+    req.logout();
+    req.session.save(function(){
+      res.redirect('/');
+    })
+  });
 
 // 404 에러처리 
 app.use((req, res, next) => {
