@@ -10,7 +10,7 @@ const dotenv = require("dotenv");
     // req 객체에 req.flash라는 프로퍼티를 새성하고 req.flash(key, value) 형태로 키에 매칭된 값을 설정하고 req.flash(key)로 불러와 사용.
 const flash = require("connect-flash");
 const Post = require("./models/Post");
-const User = require("./models/User");
+const User = require("./models/Users.js");
 
 const port = process.env.PORT || 3000;
 
@@ -31,7 +31,7 @@ const app = express();
     // ejs를 사용해 view를 구성할 것이라는 것을 나타냄
 app.set("view engine", "ejs");
 
-/* Middleware */
+/* 미들웨어 */
 app.use(cookieParser(process.env.SECRET))
 app.use(session({
     secret: process.env.SECRET,
@@ -39,7 +39,12 @@ app.use(session({
     saveUninitialized: false
 })
 );
-    // connect-flash 미들웨어로, 내부적으로 cookie-parser와 express-session 뒤에 작성해줘야한다
+
+    /* 
+    connect-flash 미들웨어로, 내부적으로 cookie-parser와 express-session 뒤에 작성해줘야한다
+    coneect-flash는 req 객체에 req.flash라는 프로퍼티를 생성하고 req.flash(key, value) 형태로
+    키에 매칭된 값을 설정하고 req.flash(key)로 불러와 사용한다.
+    */
 app.use(flash());
 
 /* Passport setup */
@@ -49,16 +54,18 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-/* Middleware */
+/* 미들웨어 */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
     // 정적 파일들을 서비스할 폴더를 public 폴더로 지정.
 app.use(express.static("public"));
 
 /* MongoDB Connection */
     // 몽구스를 사용해 Mongo DB 연결
-mongoose
+mongoose    
     .connect("mongodb://127.0.0.1:27017/facebook_clone", {
+        // connect 옵션
         useNewUrlParser: true,
         useCreateIndex: true,
         useUnifiedTopology: true
@@ -71,6 +78,7 @@ mongoose
     });
 
 /* Template 파일에 변수 전송 */
+    // 템플릿 파일에 user와 Authentication, flash와 관련한 변수를 전송해주는 부분.
 app.use((req, res, next) => {
     res.locals.user = req.user;
     res.locals.login = req.isAuthenticated();
@@ -79,17 +87,25 @@ app.use((req, res, next) => {
     next();
 });
 
-/* Routers */
+/* Routers 장착 */
 app.use("/", userRoutes);
 app.use("/", postRoutes);
 
+/* 서버 연결 */
 const server = app.listen(port, () => {
     console.log("App is running on port " + port);
 });
 
-/* WebSocket setup */
+/* 
+    WebSocket 설정
+    socket.io를 이용해 websocket 통신을 구현하고 http통신을 하는 express 서버와 연결. 
+*/
 const io = socket(server);
 
+    // Room은 Namespace의 하위 개념.(NameSpace -> Room -> Socket )
+    // Namespace안에 있는 소켓들을 또 다시 Room으로 나눌 수 있다.
+    // NameSpace란 같은 Namespace에 있는 소켓 끼리만 통신 하는 개념
+    // io.of("/chat") 을 통해 room이라는 namespace를 생성함.
 const room = io.of("/chat");
 room.on("connection", socket => {
     console.log("new user : ", socket.id);
