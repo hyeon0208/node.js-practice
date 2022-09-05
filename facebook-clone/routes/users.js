@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/User");
 const passport = require("passport");
 
+
 /*
 텍스트 데이터는 urlencoded로 처리했지만,
 텍스트가 아닌 이미지,동영상, 등의 파일 데이터는 multer 모듈을 이용해야한다.
@@ -10,6 +11,11 @@ const multer = require("multer");
 
 const cloudinary = require("cloudinary");
 const router = express.Router();
+
+    // csrf 모듈 추가.
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
+
 
 /* Multer setup */
     // multer를 이용해 저장 경로와 파일명을 처리하기 위해 diskStorage() 메서드를 사용.
@@ -100,12 +106,22 @@ function createUser(newUser, password, req, res) {
 
 /* Login 라우터 생성. */
 
-    // get 방식을 통해 views/users/login.ejs 파일을 렌더링
-router.get("/user/login", (req, res) => {
-    res.render("users/login");
-});
+    /*
+    get 방식을 통해 views/users/login.ejs 파일을 렌더링
+
+    --- 기존 코드 ----
+      router.get("/user/login", csrfProtection, (req, res) => {
+        res.render("users/login");
+    }); 에서 => csrf 모듈 추가로 다음과 같이 수정.
+    */
+    router.get("/user/login", csrfProtection, (req, res) => {
+        res.render("users/login", { csrfToken: req.csrfToken() });
+    });
+    
 
     // post 방식을 통해 passport 인증을 수행.
+    /*
+    --- 기존 코드 ---
 router.post(
     "/user/login",
     passport.authenticate("local", {
@@ -113,7 +129,18 @@ router.post(
         failureRedirect: "/user/login"
     }),
     (req, res) => { }
+);     밑은 => csrf 를 추가한 코드
+    */
+router.post(
+    "/user/login",
+    csrfProtection,
+    passport.authenticate("local", {
+        successRedirect: "/",
+        failureRedirect: "/user/login"
+    }),
+    (req, res) => { }
 );
+
 
 /* 로그인한 모든 사용자를 보여주는 라우터 생성 */
 router.get("/user/all", isLoggedIn, (req, res) => {
