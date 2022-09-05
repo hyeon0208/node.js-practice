@@ -1,4 +1,6 @@
 const express = require("express");
+const morgan = require("morgan");
+const winston = require('./config/winston');
 const mongoose = require("mongoose");
 const session = require("express-session");
 const cookieParser = require('cookie-parser');
@@ -10,7 +12,7 @@ const dotenv = require("dotenv");
     // req 객체에 req.flash라는 프로퍼티를 새성하고 req.flash(key, value) 형태로 키에 매칭된 값을 설정하고 req.flash(key)로 불러와 사용.
 const flash = require("connect-flash");
 const Post = require("./models/Post");
-const User = require("./models/Users.js");
+const User = require("./models/User.js");
 
 const port = process.env.PORT || 3000;
 
@@ -32,6 +34,17 @@ const app = express();
 app.set("view engine", "ejs");
 
 /* 미들웨어 */
+    // production 환경으로 실행시
+if (process.env.NODE_ENV === 'production') {
+    // app.enable('trust proxy');
+    app.use(morgan('combined'));
+    app.use(helmet({ contentSecurityPolicy: false }));
+    app.use(hpp());
+} else {
+    // dev 환경으로 실행시
+    app.use(morgan('dev'));
+}
+
 app.use(cookieParser(process.env.SECRET))
 app.use(session({
     secret: process.env.SECRET,
@@ -74,7 +87,9 @@ mongoose
         console.log("Connected to MongoDB");
     })
     .catch((err) => {
-        console.log(err);
+        // winston 모듈을 연결해 다음과 같이 console.log를 대체 할 수 있다.
+        // console.log를 winston.info 나 wisnton.error 형태로 바꾸면 로그 파일에 로그를 기록할 수 있다. 
+        winston.error(err);
     });
 
 /* Template 파일에 변수 전송 */
@@ -93,7 +108,7 @@ app.use("/", postRoutes);
 
 /* 서버 연결 */
 const server = app.listen(port, () => {
-    console.log("App is running on port " + port);
+    console.log(`App is running on ${port}`);
 });
 
 /* 
@@ -108,7 +123,8 @@ const io = socket(server);
     // io.of("/chat") 을 통해 room이라는 namespace를 생성함.
 const room = io.of("/chat");
 room.on("connection", socket => {
-    console.log("new user : ", socket.id);
+    // winston 모듈을 연결해 다음과 같이 console.log를 대체 할 수 있다.
+    winston.info("new user : ", socket.id);
 
     room.emit("newUser", { socketID: socket.id });
 
@@ -118,7 +134,7 @@ room.on("connection", socket => {
             onlineChatUsers[data.name] = data.socketID;
             socket.name = data.name;
             room.emit("updateUserList", Object.keys(onlineChatUsers));
-            console.log("Online users: " + Object.keys(onlineChatUsers));
+            winston.info("Online users: " + Object.keys(onlineChatUsers));
         }
     });
 
@@ -126,12 +142,12 @@ room.on("connection", socket => {
     socket.on("disconnect", () => {
         delete onlineChatUsers[socket.name];
         room.emit("updateUserList", Object.keys(onlineChatUsers));
-        console.log(`user ${socket.name} disconnected`);
+        winston.info(`user ${socket.name} disconnected`);
     });
 
         // 사용자들이 메세지를 보냈을 때.
     socket.on("chat", data => {
-        console.log(data);
+        winston.info(data);
         if (data.to === "Global Chat") {
             room.emit("chat", data);
         } else if (data.to) {
