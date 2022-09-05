@@ -5,6 +5,7 @@ const Comment = require("../models/Comment");
 const multer = require("multer");
 const cloudinary = require("cloudinary");
 const router = express.Router();
+const sanitize = require('sanitize-html');
 
 // Multer setup
 const storage = multer.diskStorage({
@@ -165,7 +166,9 @@ router.post("/post/new", isLoggedIn, upload.single("image"), (req, res) => {
                 newPost.creator = req.user;
                 newPost.time = new Date();
                 newPost.likes = 0;
-                newPost.content = req.body.content;
+                // newPost.content = req.body.content; 에서 다음과 같이 sanitize로 감싸 <script> 공격 방어
+                // sanitize(입력 내용, allowedTags: {'h1', 'b', 'em'}); 과 같이 허용할 태그도 지정가능.
+                newPost.content = sanitize(req.body.content);
                 return createPost(newPost, req, res);
             });
         } else {
@@ -173,7 +176,8 @@ router.post("/post/new", isLoggedIn, upload.single("image"), (req, res) => {
             newPost.creator = req.user;
             newPost.time = new Date();
             newPost.likes = 0;
-            newPost.content = req.body.content;
+            // newPost.content = req.body.content; 에서 다음과 같이 sanitize로 감싸 <script> 공격 방어
+            newPost.content = sanitize(req.body.content);
             return createPost(newPost, req, res);
         }
     }
